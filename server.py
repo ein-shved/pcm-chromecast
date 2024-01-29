@@ -1,30 +1,31 @@
-from flask import Flask, Response
+from flask import Flask, Response, abort
 import ffmpeg
 
 app = Flask(__name__)
+app.config.from_prefixed_env()
 
 RATE = 44100
+CHANK = 16
 
 @app.route('/')
 def audio_unlim():
     """Audio streaming generator"""
-    print ("Running proc!")
     proc = (ffmpeg
             .input("hw:1", format="alsa", ar=RATE)
             .output("pipe:", format="wav")
-            .global_args("-re")
+            .global_args("-re", "-nostdin")
             .run_async(pipe_stdout=True, quiet=True, overwrite_output=True)
     )
+    header = proc.stdout.read(44)
+    if proc.poll() is not None:
+        abort(503)
     def sound():
-        yield proc.stdout.read(44)
+        yield header
         try:
-            while True:
-                yield proc.stdout.read(16)
+            while proc.poll() is None:
+                yield proc.stdout.read(CHANK)
         finally:
             proc.kill()
             proc.wait()
 
     return Response(sound(), mimetype="audio/x-wav")
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, threaded=False, port=5000, use_reloader=False)
