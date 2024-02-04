@@ -4,14 +4,17 @@ import ffmpeg
 app = Flask(__name__)
 app.config.from_prefixed_env()
 
-RATE = 44100
-CHANK = 16
+RATE = app.config.get("RATE", 44100)
+CHANK = app.config.get("CHANK", 16)
+DEVICE = app.config.get("DEVICE")
+if DEVICE is None:
+    raise RuntimeError("Please configure FLASK_DEVICE value")
 
 @app.route('/')
 def audio_unlim():
     """Audio streaming generator"""
     proc = (ffmpeg
-            .input("hw:1", format="alsa", ar=RATE)
+            .input(DEVICE, format="alsa", ar=RATE)
             .output("pipe:", format="wav")
             .global_args("-re", "-nostdin")
             .run_async(pipe_stdout=True, quiet=True, overwrite_output=True)
