@@ -25,6 +25,16 @@
           };
         };
         packages = {
+          firmware = pkgs.callPackage ./firmware {
+            inherit nixpkgs;
+            configuration = {
+              imports = [ ./service.nix ];
+              services.chromecast-pcm = {
+                enable = true;
+                device = "hw:1";
+              };
+            };
+          };
           chromecast-pcm = pkgs.callPackage ./default.nix {};
           test = pkgs.callPackage ./test.nix {};
         };
