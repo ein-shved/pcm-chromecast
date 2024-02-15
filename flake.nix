@@ -24,5 +24,9 @@
             ];
           };
         };
+        packages = {
+          chromecast-pcm = pkgs.callPackage ./default.nix {};
+          test = pkgs.callPackage ./test.nix {};
+        };
       });
 }
