@@ -1,5 +1,8 @@
 {
-  outputs = { self, nixpkgs, flake-utils }:
+  inputs = {
+    swyh-rs.url = github:ein-shved/swyh-rs/nix;
+  };
+  outputs = { self, nixpkgs, flake-utils, swyh-rs }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
@@ -28,9 +31,9 @@
           firmware = pkgs.callPackage ./firmware {
             inherit nixpkgs;
             configuration = {
-              imports = [ ./service.nix ];
+              imports = [ ./service.nix ./swyh-rs.nix ] ++ swyh-rs.modules;
               services.chromecast-pcm = {
-                enable = true;
+                enable = false;
                 device = "hw:1";
               };
             };
