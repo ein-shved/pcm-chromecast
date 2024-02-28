@@ -1,10 +1,9 @@
-{pkgs, ...} :
-{
+{pkgs, ...}: {
   users.users.chromecast = {
     initialPassword = "chromecast";
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = ["wheel"];
   };
   services.openssh.enable = true;
-  environment.systemPackages = with pkgs; [ alsa-utils ];
+  environment.systemPackages = with pkgs; [alsa-utils];
 }
