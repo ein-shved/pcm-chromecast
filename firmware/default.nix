@@ -54,6 +54,7 @@
       # Minimal configuration
       "${nixpkgs}/nixos/modules/profiles/minimal.nix"
       bootConfig
+      ./usb-dt.nix
       ./configuration.nix
       configuration
     ];
