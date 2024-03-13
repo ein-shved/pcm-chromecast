@@ -28,6 +28,6 @@ in {
     };
   };
   networking.firewall = {
-    allowedUDPPorts = [ 5353 ];
+    allowedUDPPorts = [5353];
   };
 }

@@ -1,4 +1,5 @@
 {
+  description = "Software for vinyl player to chromecast upgrade";
   inputs = {
     swyh-rs.url = github:ein-shved/swyh-rs/nix;
   };
